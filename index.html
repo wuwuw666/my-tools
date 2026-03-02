@@ -3,150 +3,108 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>个人简历 - 您的姓名</title>
+    <title>简历 - 您的姓名</title>
     <link rel="stylesheet" href="style.css">
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700&display=swap" rel="stylesheet">
 </head>
 <body>
-    <div class="container">
-        <!-- 左侧边栏 -->
-        <aside class="sidebar">
-            <div class="profile">
-                <div class="avatar">
-                    <img src="https://via.placeholder.com/150" alt="头像">
+    <div class="page">
+        <article class="resume">
+            <!-- 头部 -->
+            <header class="header">
+                <div class="header-left">
+                    <div class="avatar">
+                        <img src="https://via.placeholder.com/100" alt="头像">
+                    </div>
                 </div>
-                <h1 class="name">您的姓名</h1>
-                <p class="title">前端开发工程师</p>
-            </div>
+                <div class="header-right">
+                    <h1 class="name">您的姓名</h1>
+                    <p class="title">前端开发工程师</p>
+                    <div class="contacts">
+                        <a href="mailto:email@example.com" class="contact-item">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+                                <polyline points="22,6 12,13 2,6"></polyline>
+                            </svg>
+                            email@example.com
+                        </a>
+                        <span class="contact-item">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path>
+                            </svg>
+                            138-xxxx-xxxx
+                        </span>
+                        <span class="contact-item">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+                                <circle cx="12" cy="10" r="3"></circle>
+                            </svg>
+                            北京市
+                        </span>
+                        <a href="https://github.com/wuwuw666" target="_blank" class="contact-item">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
+                            </svg>
+                            GitHub
+                        </a>
+                    </div>
+                </div>
+            </header>
 
-            <section class="contact">
-                <h2>联系方式</h2>
-                <ul>
-                    <li>
-                        <span class="icon">📧</span>
-                        <span>email@example.com</span>
-                    </li>
-                    <li>
-                        <span class="icon">📱</span>
-                        <span>138-xxxx-xxxx</span>
-                    </li>
-                    <li>
-                        <span class="icon">📍</span>
-                        <span>北京市</span>
-                    </li>
-                    <li>
-                        <span class="icon">🔗</span>
-                        <a href="https://github.com/wuwuw666" target="_blank">GitHub</a>
-                    </li>
-                </ul>
-            </section>
-
-            <section class="skills">
-                <h2>专业技能</h2>
-                <div class="skill-item">
-                    <span>HTML / CSS</span>
-                    <div class="skill-bar">
-                        <div class="skill-progress" style="width: 90%"></div>
-                    </div>
-                </div>
-                <div class="skill-item">
-                    <span>JavaScript</span>
-                    <div class="skill-bar">
-                        <div class="skill-progress" style="width: 85%"></div>
-                    </div>
-                </div>
-                <div class="skill-item">
-                    <span>Vue / React</span>
-                    <div class="skill-bar">
-                        <div class="skill-progress" style="width: 80%"></div>
-                    </div>
-                </div>
-                <div class="skill-item">
-                    <span>Node.js</span>
-                    <div class="skill-bar">
-                        <div class="skill-progress" style="width: 70%"></div>
-                    </div>
-                </div>
-                <div class="skill-item">
-                    <span>Python</span>
-                    <div class="skill-bar">
-                        <div class="skill-progress" style="width: 65%"></div>
-                    </div>
-                </div>
-            </section>
-
-            <section class="languages">
-                <h2>语言能力</h2>
-                <ul>
-                    <li>中文 - 母语</li>
-                    <li>英语 - CET-6</li>
-                </ul>
-            </section>
-        </aside>
-
-        <!-- 主内容区 -->
-        <main class="main-content">
-            <section class="about">
-                <h2>个人简介</h2>
-                <p>
-                    热爱编程的开发者，拥有X年的前端开发经验。专注于创建用户友好、高性能的Web应用程序。
+            <!-- 简介 -->
+            <section class="section">
+                <p class="summary">
+                    热爱编程的开发者，拥有 X 年前端开发经验。专注于创建用户友好、高性能的 Web 应用程序。
                     善于学习新技术，具有良好的团队协作能力和沟通能力。
-                    对代码质量有较高要求，追求优雅的解决方案。
                 </p>
             </section>
 
-            <section class="experience">
-                <h2>工作经历</h2>
+            <!-- 工作经历 -->
+            <section class="section">
+                <h2 class="section-title">工作经历</h2>
 
-                <div class="experience-item">
-                    <div class="experience-header">
-                        <h3>高级前端工程师</h3>
-                        <span class="company">XX科技有限公司</span>
+                <div class="item">
+                    <div class="item-header">
+                        <div class="item-title-group">
+                            <h3 class="item-title">高级前端工程师</h3>
+                            <span class="item-subtitle">XX科技有限公司</span>
+                        </div>
+                        <span class="item-date">2022.06 - 至今</span>
                     </div>
-                    <span class="date">2022.06 - 至今</span>
-                    <ul>
+                    <ul class="item-list">
                         <li>负责公司核心产品的前端架构设计与开发</li>
-                        <li>优化页面性能，提升用户体验，页面加载速度提升40%</li>
-                        <li>带领团队完成多个重要项目，培养新人3名</li>
-                        <li>制定前端开发规范，提高团队开发效率</li>
+                        <li>优化页面性能，提升用户体验，页面加载速度提升 40%</li>
+                        <li>带领团队完成多个重要项目，培养新人 3 名</li>
                     </ul>
                 </div>
 
-                <div class="experience-item">
-                    <div class="experience-header">
-                        <h3>前端开发工程师</h3>
-                        <span class="company">XX互联网公司</span>
+                <div class="item">
+                    <div class="item-header">
+                        <div class="item-title-group">
+                            <h3 class="item-title">前端开发工程师</h3>
+                            <span class="item-subtitle">XX互联网公司</span>
+                        </div>
+                        <span class="item-date">2020.07 - 2022.05</span>
                     </div>
-                    <span class="date">2020.07 - 2022.05</span>
-                    <ul>
+                    <ul class="item-list">
                         <li>参与公司电商平台的前端开发工作</li>
                         <li>使用 Vue.js 开发多个业务模块</li>
-                        <li>与后端团队协作，完成API对接与联调</li>
+                        <li>与后端团队协作，完成 API 对接与联调</li>
                     </ul>
                 </div>
             </section>
 
-            <section class="education">
-                <h2>教育背景</h2>
-                <div class="education-item">
-                    <div class="education-header">
-                        <h3>计算机科学与技术</h3>
-                        <span class="school">XX大学</span>
+            <!-- 项目经历 -->
+            <section class="section">
+                <h2 class="section-title">项目经历</h2>
+
+                <div class="item">
+                    <div class="item-header">
+                        <div class="item-title-group">
+                            <h3 class="item-title">企业管理系统</h3>
+                        </div>
                     </div>
-                    <span class="date">2016.09 - 2020.06</span>
-                    <p>本科 | 学士学位</p>
-                </div>
-            </section>
-
-            <section class="projects">
-                <h2>项目经历</h2>
-
-                <div class="project-item">
-                    <h3>企业管理系统</h3>
-                    <p class="project-desc">
-                        一个功能完善的企业内部管理系统，包含用户管理、权限控制、数据统计等模块。
-                    </p>
-                    <div class="tech-tags">
+                    <p class="item-desc">一个功能完善的企业内部管理系统，包含用户管理、权限控制、数据统计等模块。</p>
+                    <div class="tags">
                         <span class="tag">Vue 3</span>
                         <span class="tag">TypeScript</span>
                         <span class="tag">Element Plus</span>
@@ -154,12 +112,14 @@
                     </div>
                 </div>
 
-                <div class="project-item">
-                    <h3>电商平台</h3>
-                    <p class="project-desc">
-                        全栈电商项目，支持商品浏览、购物车、订单管理、支付等功能。
-                    </p>
-                    <div class="tech-tags">
+                <div class="item">
+                    <div class="item-header">
+                        <div class="item-title-group">
+                            <h3 class="item-title">电商平台</h3>
+                        </div>
+                    </div>
+                    <p class="item-desc">全栈电商项目，支持商品浏览、购物车、订单管理、支付等功能。</p>
+                    <div class="tags">
                         <span class="tag">React</span>
                         <span class="tag">Redux</span>
                         <span class="tag">Express</span>
@@ -167,12 +127,14 @@
                     </div>
                 </div>
 
-                <div class="project-item">
-                    <h3>个人博客系统</h3>
-                    <p class="project-desc">
-                        基于静态站点生成的个人博客，支持Markdown写作和代码高亮。
-                    </p>
-                    <div class="tech-tags">
+                <div class="item">
+                    <div class="item-header">
+                        <div class="item-title-group">
+                            <h3 class="item-title">个人博客系统</h3>
+                        </div>
+                    </div>
+                    <p class="item-desc">基于静态站点生成的个人博客，支持 Markdown 写作和代码高亮。</p>
+                    <div class="tags">
                         <span class="tag">JavaScript</span>
                         <span class="tag">CSS3</span>
                         <span class="tag">Markdown</span>
@@ -180,19 +142,54 @@
                 </div>
             </section>
 
-            <section class="certificates">
-                <h2>证书与荣誉</h2>
-                <ul>
-                    <li>🏆 2023年度优秀员工</li>
-                    <li>📜 软件设计师中级证书</li>
-                    <li>🎖️ 公司技术创新奖</li>
+            <!-- 技能 -->
+            <section class="section">
+                <h2 class="section-title">技能</h2>
+                <div class="skills-grid">
+                    <div class="skill-group">
+                        <h4>前端</h4>
+                        <p>HTML / CSS / JavaScript / TypeScript / Vue / React</p>
+                    </div>
+                    <div class="skill-group">
+                        <h4>后端</h4>
+                        <p>Node.js / Express / Python</p>
+                    </div>
+                    <div class="skill-group">
+                        <h4>工具</h4>
+                        <p>Git / Webpack / Vite / VS Code</p>
+                    </div>
+                    <div class="skill-group">
+                        <h4>其他</h4>
+                        <p>MongoDB / MySQL / Docker</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 教育背景 -->
+            <section class="section">
+                <h2 class="section-title">教育背景</h2>
+                <div class="item">
+                    <div class="item-header">
+                        <div class="item-title-group">
+                            <h3 class="item-title">计算机科学与技术</h3>
+                            <span class="item-subtitle">XX大学</span>
+                        </div>
+                        <span class="item-date">2016.09 - 2020.06</span>
+                    </div>
+                    <p class="item-desc">本科 · 学士学位</p>
+                </div>
+            </section>
+
+            <!-- 证书 -->
+            <section class="section section-last">
+                <h2 class="section-title">证书与荣誉</h2>
+                <ul class="item-list">
+                    <li>2023 年度优秀员工</li>
+                    <li>软件设计师中级证书</li>
+                    <li>公司技术创新奖</li>
                 </ul>
             </section>
-        </main>
+        </article>
     </div>
-
-    <footer>
-        <p>&copy; 2024 您的姓名. All rights reserved.</p>
-    </footer>
 </body>
 </html>

@@ -7,11 +7,28 @@
     .drag-intro .drag-intro-surface{fill:#ffe37c;stroke:#cc7f23;stroke-width:2}
     .drag-intro text{fill:#493311;font:700 17px "Microsoft YaHei","PingFang SC",sans-serif;text-anchor:middle;pointer-events:none}
     .drag-intro-breathe{animation:drag-intro-attention 1.7s ease-in-out 3}
+    #constructionPlay.play-intro,#areaPlay.play-intro{background:#ffe37c;color:#493311;border-color:#cc7f23;box-shadow:0 3px 0 #bd8b29}
+    .play-intro-breathe{animation:drag-intro-attention 1.7s ease-in-out 3}
     .has-drag-intro>.handle-caption,.has-drag-intro>.point-name{visibility:hidden}
     @keyframes drag-intro-attention{0%,100%{opacity:1}50%{opacity:.66}}
-    @media(prefers-reduced-motion:reduce){.drag-intro-breathe{animation:none}}
+    @media(prefers-reduced-motion:reduce){.drag-intro-breathe,.play-intro-breathe{animation:none}}
   `;
   document.head.append(style);
+  // Highlight each play button independently without touching its clock or size.
+  const playObserver=new IntersectionObserver(entries=>{
+    for(const entry of entries)if(entry.isIntersecting){
+      if(entry.target.classList.contains('play-intro'))entry.target.classList.add('play-intro-breathe');
+      playObserver.unobserve(entry.target);
+    }
+  },{threshold:.5});
+  for(const id of ['constructionPlay','areaPlay']){
+    const button=document.getElementById(id);if(!button)continue;
+    button.classList.add('play-intro');playObserver.observe(button);
+    button.addEventListener('click',()=>{
+      button.classList.remove('play-intro','play-intro-breathe');
+      playObserver.unobserve(button);
+    },{once:true,capture:true});
+  }
   function dismiss(key){
     seen.add(key);
     for(const [name,{target}] of targets)if(name===key){

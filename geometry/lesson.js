@@ -219,6 +219,7 @@
     const n=card.dataset.question,answer=answers[n],correct=button.dataset.answer===answer.right;attempts.set(n,correct);
     const feedback=card.querySelector('.quiz-feedback');feedback.textContent=(correct?'答对了！':'再试一次。')+answer.text;feedback.classList.toggle('correct',correct);
     card.querySelectorAll('[data-answer]').forEach(b=>b.setAttribute('aria-pressed',String(b===button)));score();
+    document.dispatchEvent(new CustomEvent('geometry-answer',{detail:{subject:'math',kind:'geometry',prompt:card.querySelector('h3').textContent+' '+(card.querySelector('p:not(.quiz-feedback)')?.textContent||''),expected:card.querySelector(`[data-answer="${answer.right}"]`).textContent,explanation:answer.text,answer:button.textContent,correct}}));
   })));
   $('quizReset').addEventListener('click',()=>{attempts.clear();document.querySelectorAll('[data-answer]').forEach(b=>b.setAttribute('aria-pressed','false'));document.querySelectorAll('.quiz-feedback').forEach(p=>{p.textContent='重新选一个答案，再说明理由。';p.classList.remove('correct');});score();});
 })();

@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#f6f5ef">
+  <meta name="description" content="通过拖动、三角尺动画与拼图，理解三角形、平行四边形、矩形、梯形的底高与面积关系，含3道练习题。">
+  <title>图形的底和高 · 拖一拖，画一画</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="page">
+  <header class="masthead"><a class="brand" href="./" aria-label="几何实验室首页"><span class="brand-mark">△</span> 小小几何实验室</a><span class="quiet">动手发现 · 底和高</span></header>
+  <main>
+    <section class="intro"><div class="eyebrow">先观察，再动手，最后说出发现</div><h1>底和高，<span>把图形连起来。</span></h1><p>拖一拖、画一画、拼一拼：看懂三角形、平行四边形、矩形和梯形之间的关系。</p></section>
+    <nav class="chapter-nav" aria-label="学习内容"><a href="#triangleLab">① 拖动三角形</a><a href="#shapeFamily">② 认识四种图形</a><a href="#movingHeights">③ 高有多少条</a><a href="#drawingLesson">④ 动画画高</a><a href="#areaLesson">⑤ 拼图看面积</a><a href="#checkHeight">⑥ 3 道小挑战</a></nav>
+    <h2 class="chapter-title" id="triangleLab">先拖一拖：底换了，高也会换</h2>
+    <nav class="experiments" aria-label="选择小实验">
+      <button class="experiment active" data-scene="free" aria-pressed="true"><span>01</span> 自由拖一拖</button>
+      <button class="experiment" data-scene="tilted" aria-pressed="false"><span>02</span> 底也能斜着</button>
+      <button class="experiment" data-scene="outside" aria-pressed="false"><span>03</span> 高跑到外面了</button>
+      <button class="experiment" data-scene="parallel" aria-pressed="false"><span>04</span> 同底等高</button>
+    </nav>
+    <section class="lab" aria-label="三角形互动实验">
+      <div class="board-top"><div class="drag-hint"><span class="grab-icon">✥</span><span id="dragHint">拖动 A、B、C 任意一个圆点</span></div><button class="reset" id="reset" aria-label="重置当前实验">↺ 重新开始</button></div>
+      <svg id="board" viewBox="0 0 900 540" role="group" aria-labelledby="svgTitle svgDesc">
+        <title id="svgTitle">可以拖动的三角形，橙色为底，蓝色为对应的高</title>
+        <desc id="svgDesc">拖动三个顶点。高从底边对面的顶点出发，垂直落到底边所在的直线上。也可用方向键移动已选中的顶点。</desc>
+        <defs><pattern id="dots" width="30" height="30" patternUnits="userSpaceOnUse"><circle cx="1" cy="1" r="1" fill="#dce3e0"/></pattern></defs>
+        <rect id="grid" x="-2000" y="-2000" width="5000" height="5000" fill="url(#dots)"/>
+        <line id="parallelGuide" class="parallel-guide" x1="-1000" x2="2000" y1="0" y2="0"/>
+        <g id="comparisonGeometry" style="display:none">
+          <polygon id="compareTriangle" class="compare-triangle"/>
+          <line id="compareHeight" class="compare-height"/>
+          <path id="compareAngle" class="compare-angle"/>
+          <circle id="compareFoot" r="4" class="compare-foot"/>
+          <text id="compareFootLabel" class="foot-label">K</text>
+          <g id="compareHeightTag" class="label-tag compare-tag"><rect width="96" height="38" rx="12"/><text x="48" y="25" text-anchor="middle">高 DK</text></g>
+        </g>
+        <polygon id="triangle" class="triangle"/>
+        <line id="extension" class="extension"/>
+        <line id="baseLine" class="base-line"/>
+        <line id="heightLine" class="height-line"/>
+        <path id="rightAngle" class="right-angle"/>
+        <circle id="footDot" r="4" class="foot-dot"/>
+        <text id="footLabel" class="foot-label">H</text>
+        <g id="heightTag" class="label-tag"><rect width="96" height="38" rx="12"/><text x="48" y="25" text-anchor="middle">高 AH</text></g>
+        <g id="baseTag" class="label-tag base-tag"><rect width="100" height="38" rx="12"/><text x="50" y="25" text-anchor="middle">底 BC</text></g>
+        <text id="angleLabel" class="angle-label">90°</text>
+        <g class="vertex" data-point="A" role="button" tabindex="0" aria-label="拖动顶点 A，也可用方向键移动"><circle class="hit" r="42"/><circle class="halo" r="26"/><circle class="dot" r="12"/><text class="point-name" text-anchor="middle" y="-36">A</text></g>
+        <g class="vertex" data-point="B" role="button" tabindex="0" aria-label="拖动顶点 B，也可用方向键移动"><circle class="hit" r="42"/><circle class="halo" r="26"/><circle class="dot" r="12"/><text class="point-name" text-anchor="middle" y="42">B</text></g>
+        <g class="vertex" data-point="C" role="button" tabindex="0" aria-label="拖动顶点 C，也可用方向键移动"><circle class="hit" r="42"/><circle class="halo" r="26"/><circle class="dot" r="12"/><text class="point-name" text-anchor="middle" y="42">C</text></g>
+        <g class="vertex alternate" data-point="D" role="button" tabindex="0" style="display:none" aria-label="第二个三角形的顶点 D，可以左右拖动"><circle class="hit" r="42"/><circle class="halo" r="26"/><circle class="dot" r="12"/><text class="point-name" text-anchor="middle" y="-36">D</text></g>
+      </svg>
+      <section class="same-base-panel" id="sameBasePanel" hidden aria-label="同底等高的意思">
+        <div><span class="compare-step">什么叫同底？</span><strong>都用 <em>BC</em> 当底</strong><p>△ABC 和 △DBC 共用这条橙色底边。</p></div>
+        <div><span class="compare-step">什么叫等高？</span><strong>AH = DK = <span id="equalHeight">—</span></strong><p>两条高都垂直于底边，而且一样长。</p></div>
+        <div><span class="compare-step">比较两个面积</span><strong>△ABC：<span id="areaFirst">—</span><br>△DBC：<span id="areaSecond">—</span></strong><p>两个面积都是 <span id="equalArea">—</span>。形状、斜边可以不同，面积却相等，因为都用“同一个底 × 同样长的高 ÷ 2”。</p></div>
+      </section>
+      <div class="base-picker"><span>你想选哪条边当底？</span><div role="group" aria-label="选择底边"><button class="base-choice selected" data-base="BC" aria-pressed="true">BC 当底</button><button class="base-choice" data-base="CA" aria-pressed="false">CA 当底</button><button class="base-choice" data-base="AB" aria-pressed="false">AB 当底</button></div></div>
+    </section>
+    <section class="understand" aria-label="底和高怎样对应">
+      <div class="pairing"><div class="pair"><span class="pair-number">1</span><div><span class="pair-title">选好的底</span><strong id="baseName">边 BC</strong></div></div><span class="pair-arrow">→</span><div class="pair"><span class="pair-number">2</span><div><span class="pair-title">底对面的顶点</span><strong id="vertexName">顶点 A</strong></div></div><span class="pair-arrow">→</span><div class="pair"><span class="pair-number blue">3</span><div><span class="pair-title">垂直落下的高</span><strong id="heightName">线段 AH</strong></div></div></div>
+      <div class="discovery"><span class="discovery-symbol">✦</span><div><h2 id="discoveryTitle">高要和底边所在的直线垂直。</h2><p id="discoveryText">看蓝色小方角：这里总是 90°。高不是任意一条斜着连过去的线。</p></div></div>
+    </section>
+    <details class="numbers"><summary>再发现一点：底、高和面积 <span>＋</span></summary><div class="measurements"><div><span>底的长度</span><strong id="baseValue">—</strong></div><b>×</b><div><span>对应的高</span><strong id="heightValue">—</strong></div><b>÷ 2 =</b><div><span>三角形面积</span><strong id="areaValue">—</strong></div></div><p>小圆点的间隔代表 1 个长度单位。长度和面积都按图形实时计算，显示值经过四舍五入。</p></details>
+    <section class="lesson-section" id="shapeFamily" aria-labelledby="familyTitle">
+      <div class="eyebrow">把图形连起来看</div><h2 id="familyTitle">它们有联系，但不是同一种图形</h2>
+      <p class="section-lead">先数边，再看哪些边平行、哪些角是直角。<strong>矩形（也叫长方形）是一种特殊的平行四边形。</strong></p>
+      <div class="relation-map" aria-label="四种图形的分类关系"><div><span>3 条边</span><strong>三角形</strong><small>一条底 ↔ 对面的一个顶点</small></div><div><span>4 条边 · 两组对边平行</span><strong>平行四边形 <b>→</b> 四个角都是直角 <b>→</b> 矩形</strong><small>矩形属于平行四边形；它们都属于四边形</small></div><div><span>4 条边 · 只有一组对边平行</span><strong>梯形</strong><small>平行的两边：上底、下底；另两边：腰</small></div></div>
+      <div class="family-grid">
+        <article class="family-card"><svg viewBox="0 0 300 170" role="img" aria-label="三角形示意图"><polygon points="145,25 45,140 255,140"/><line x1="145" y1="25" x2="145" y2="140" class="mini-height"/><path d="M145 126h14v14" class="mini-angle"/><line x1="45" y1="140" x2="255" y2="140" class="mini-base"/></svg><h3>三角形</h3><p>选一条边当底，从<strong>对面的顶点</strong>向底边所在的直线作垂线。</p><strong class="formula">面积 = 底 × 对应的高 ÷ 2</strong></article>
+        <article class="family-card"><svg viewBox="0 0 300 170" role="img" aria-label="平行四边形沿对角线分成两个三角形"><polygon points="100,30 270,30 215,140 45,140"/><path d="M100 30L215 140" class="mini-diagonal"/><line x1="100" y1="30" x2="100" y2="140" class="mini-height"/><path d="M100 126h14v14" class="mini-angle"/><line x1="45" y1="140" x2="215" y2="140" class="mini-base"/></svg><h3>平行四边形</h3><p>两组对边分别平行。高是<strong>选定的底与它的对边之间的垂直距离</strong>，斜边通常不是高。</p><strong class="formula">面积 = 底 × 对应的高</strong></article>
+        <article class="family-card"><svg viewBox="0 0 300 170" role="img" aria-label="矩形有四个直角，也能沿对角线分成两个三角形"><polygon points="50,30 250,30 250,140 50,140"/><path d="M50 30L250 140" class="mini-diagonal"/><line x1="50" y1="30" x2="50" y2="140" class="mini-height"/><path d="M50 126h14v14" class="mini-angle"/><line x1="50" y1="140" x2="250" y2="140" class="mini-base"/></svg><h3>矩形 / 长方形</h3><p>有四个直角，是特殊的平行四边形。选一条边当底，<strong>相邻的边就可以作为高</strong>。</p><strong class="formula">面积 = 长 × 宽 = 底 × 高</strong></article>
+        <article class="family-card"><svg viewBox="0 0 300 170" role="img" aria-label="梯形的上底下底平行，高与两底垂直"><polygon points="100,30 210,30 265,140 35,140"/><line x1="100" y1="30" x2="100" y2="140" class="mini-height"/><path d="M100 126h14v14" class="mini-angle"/><line x1="100" y1="30" x2="210" y2="30" class="mini-base"/><line x1="35" y1="140" x2="265" y2="140" class="mini-base"/></svg><h3>梯形</h3><p><strong>只有一组对边平行</strong>，叫上底和下底。高是这两条平行线之间的垂直距离，通常不是腰的长度。</p><strong class="formula">面积 =（上底 + 下底）× 高 ÷ 2</strong></article>
+      </div>
+      <div class="connection-note"><h3>一条对角线，把四边形和三角形连起来</h3><p>矩形、平行四边形、梯形都能沿一条对角线分成两个三角形。<strong>矩形和平行四边形分出的两块形状、大小相同；梯形分出的两块面积不同，不能直接说各占一半。</strong></p><p>往下看“拼图看面积”：两个完全相同的三角形能拼成平行四边形；两个完全相同的梯形也能拼成平行四边形。</p></div>
+    </section>
+    <section class="lesson-section" id="movingHeights" aria-labelledby="movingTitle"><div class="eyebrow">动手验证：位置变了，长度呢？</div><h2 id="movingTitle">高可以有无数条，长度却一样</h2><p class="section-lead">选定同一组平行的底与对边，在对边上换一个点，就能画一条高。拖动蓝色圆点，或移动下面的滑块。</p><div class="activity-card"><div class="shape-switch" role="group" aria-label="选择移动高的图形"><button data-height-shape="parallelogram" aria-pressed="true">平行四边形</button><button data-height-shape="rectangle" aria-pressed="false">矩形</button><button data-height-shape="trapezoid" aria-pressed="false">梯形</button></div><div class="drawing-options"><label>选底 <select id="movingBase" aria-label="移动高实验的底边"></select></label><label><input id="movingTilt" type="checkbox"> 把图形转斜</label><label><input id="showManyHeights" type="checkbox" checked> 留下几条高作比较</label></div><svg id="heightsBoard" viewBox="0 0 900 500" role="group" aria-labelledby="heightsTitle heightsDesc"></svg><div class="height-controls"><label for="heightPosition">换一个位置画高</label><input id="heightPosition" type="range" min="0" max="100" step="0.1" value="40" aria-label="高在对边上的位置"><div class="live-metrics"><span>这条高：<strong id="movingHeightValue">—</strong></span><span>图形面积：<strong id="movingAreaValue">—</strong></span></div><p id="heightFinding">—</p></div></div><div class="connection-note"><h3>“无数条”不等于“无数种长度”</h3><p>同一组平行线之间，垂直距离处处相等，所以这些高都一样长。画面只画出几条作为例子；两条之间还可以继续画。</p><p><strong>三角形不一样：</strong>固定一条底和它对面的顶点，垂线只有一条。换一条底，才会得到另一条对应的高。</p></div></section>
+    <section class="lesson-section" id="drawingLesson" aria-labelledby="drawingTitle">
+      <div class="eyebrow">拿出直尺和三角尺</div><h2 id="drawingTitle">跟着动画，用三角尺画一条高</h2><p class="section-lead">浅绿色是三角尺。点击播放，看它先贴住橙色底边，再沿底边平移，最后沿另一条直角边画蓝色的高。可以暂停、慢放，也可以拖动进度。</p>
+      <div class="drawing-lab">
+        <div class="shape-switch" role="group" aria-label="选择作图示例"><button data-shape="acute" aria-pressed="true">锐角三角形</button><button data-shape="right" aria-pressed="false">直角三角形</button><button data-shape="obtuse" aria-pressed="false">钝角三角形</button><button data-shape="parallelogram" aria-pressed="false">平行四边形</button><button data-shape="rectangle" aria-pressed="false">矩形</button><button data-shape="trapezoid" aria-pressed="false">梯形</button></div>
+        <div class="drawing-options"><label>选底边 <select id="lessonBase" aria-label="作图示例的底边"></select></label><label><input id="tiltLesson" type="checkbox"> 把图形转斜一点</label><label><input id="splitLesson" type="checkbox"> 看对角线分成两个三角形</label></div>
+        <div class="step-buttons" role="group" aria-label="画高的步骤"><button data-step="1" aria-pressed="true">① 选底找起点</button><button data-step="2" aria-pressed="false">② 直角边贴底边</button><button data-step="3" aria-pressed="false">③ 平移到起点</button><button data-step="4" aria-pressed="false">④ 画高、标直角</button></div>
+        <div class="motion-controls"><button id="constructionPlay" class="play-button">▶ 播放画高动画</button><button id="constructionRestart">↺ 重来</button><label>速度 <select id="constructionSpeed"><option value="0.5">慢速 0.5×</option><option value="1" selected>正常 1×</option><option value="1.5">稍快 1.5×</option></select></label><label class="progress-label">进度 <input id="constructionProgress" type="range" min="0" max="1000" step="1" value="0" aria-label="画高动画进度"></label></div>
+        <label class="calm-option"><input id="calmMotion" type="checkbox"> 减少动画，只用按钮或进度条看分步图（也适用于下方拼图）</label>
+        <svg id="constructionBoard" viewBox="0 0 900 500" role="img" aria-labelledby="constructionTitle constructionDesc"><title id="constructionTitle">一步一步画高</title><desc id="constructionDesc">选择图形和步骤，观看底边、垂线和直角的对应关系。</desc></svg>
+        <div class="drawing-caption" aria-live="polite"><span id="lessonStepCount">第 1 步 / 共 4 步</span><h3 id="lessonStepTitle">先选一条边当底</h3><p id="lessonStepText"></p><p id="lessonObservation" class="observation"></p><button id="lessonNext" class="next-step">下一步 →</button></div>
+      </div>
+      <details class="paper-guide"><summary>我想在纸上从头画图形 →</summary><div class="paper-grid"><article><h3>画三角形</h3><ol><li>用直尺画线段 BC。</li><li>在 BC 所在直线外点一个点 A。</li><li>连接 AB 和 AC，得到三角形。</li><li>选 BC 当底，再从 A 作 BC 所在直线的垂线。</li></ol><p>三点不能排成一条直线。想画直角三角形，可先在 B 作垂线，再在垂线上取 A。</p></article><article><h3>画矩形</h3><ol><li>用直尺画底边 AB。</li><li>分别经过 A、B，向同一侧作 AB 的垂线。</li><li>在两条垂线上分别取 D、C，让 AD = BC。</li><li>连接 DC。AD 或 BC 就是底 AB 对应的高。</li></ol><p>用三角尺的小方角检查四个角，应该都是直角。</p></article><article><h3>画平行四边形</h3><ol><li>画底边 AB，再画一条相邻边 AD。</li><li>过 D 画 AB 的平行线。</li><li>过 B 画 AD 的平行线，两线交于 C。</li><li>连接完成后，从 D 向 AB 所在直线作垂线，得到对应的高。</li></ol><p>画平行线：三角尺的一条边贴住原线，另一条边靠直尺；固定直尺，平移三角尺，到目标点后沿原来那条边画线。</p></article><article><h3>画梯形</h3><ol><li>先画一条下底 BC。</li><li>在上方画一条与 BC 平行的直线。</li><li>在上方直线上取 A、D，使 AD 与 BC 长度不同。</li><li>连接 AB、DC，这两条是腰。再从上底的一个点向下底所在直线作垂线。</li></ol><p>不要把腰当高。上底、下底是相对的名称，图形转动后仍是这组平行边。</p></article></div></details>
+    </section>
+    <section class="lesson-section" id="areaLesson" aria-labelledby="areaTitle"><div class="eyebrow">不只背公式：看它是怎么拼出来的</div><h2 id="areaTitle">为什么三角形面积要“÷ 2”？</h2><p class="section-lead" id="areaLead">拿两个完全相同的图形，把其中一个转半圈、移过去。每一块的形状和大小都没有改变。</p><div class="activity-card"><div class="shape-switch" role="group" aria-label="选择面积拼图"><button data-area-mode="parallelogram" aria-pressed="false">平行四边形 → 长方形</button><button data-area-mode="triangle" aria-pressed="true">两个三角形 → 平行四边形</button><button data-area-mode="trapezoid" aria-pressed="false">两个梯形 → 平行四边形</button></div><div class="motion-controls"><button id="areaPlay" class="play-button">▶ 播放拼图动画</button><button id="areaRestart">↺ 重来</button><label>速度 <select id="areaSpeed"><option value="0.5">慢速 0.5×</option><option value="1" selected>正常 1×</option><option value="1.5">稍快 1.5×</option></select></label><label class="progress-label">进度 <input id="areaProgress" type="range" min="0" max="1000" step="1" value="0" aria-label="面积拼图动画进度"></label></div><div class="step-buttons" role="group" aria-label="面积拼图步骤"><button data-area-step="0" aria-pressed="true">① 两份一样大</button><button data-area-step="1" aria-pressed="false">② 旋转、移动</button><button data-area-step="2" aria-pressed="false">③ 拼成新图形</button><button data-area-step="3" aria-pressed="false">④ 每份占一半</button></div><svg id="areaBoard" viewBox="0 -80 1000 560" role="img" aria-labelledby="assemblyTitle assemblyDesc"></svg><div class="drawing-caption" aria-live="polite"><h3 id="areaStageTitle">两块完全相同的三角形</h3><p id="areaStageText"></p><p id="areaFormula" class="big-formula"></p><p id="areaExample"></p></div></div><div class="connection-note"><h3>同底等高 → 面积相等，要说清比较的是哪类图形</h3><p><strong>两个三角形：</strong>同底等高，都用“底 × 高 ÷ 2”，所以面积相等。上方“同底等高”实验里，拖动 A 和 D 就能验证。</p><p><strong>两个平行四边形（包括矩形）：</strong>同底等高，都用“底 × 高”，面积也相等。但同底等高的三角形，面积只是平行四边形的一半。</p><p><strong>两个梯形：</strong>要比较“上底 + 下底”的和与高。只让下底相同、高相同，上底不同，面积仍可能不同。</p></div><details class="paper-guide"><summary>再想一步：面积一样，底和高一定都一样吗？</summary><p>不一定。例如三角形一：底 6、高 4，面积 12；三角形二：底 8、高 3，面积也是 12。所以“同底等高”能保证面积相等，但面积相等不一定同底等高。</p></details></section>
+    <section class="lesson-section" id="checkHeight" aria-labelledby="checkTitle"><div class="eyebrow">你来当小老师</div><h2 id="checkTitle">会判断，也能说明原因</h2><div class="checklist"><p><b>1</b><span><strong>先选底，再找对应的高。</strong>底可以斜着，不一定在最下面。梯形的底是那一组平行边，不能把腰随便当底套公式。</span></p><p><b>2</b><span><strong>三角形看对面的顶点；平行的底与对边看垂直距离。</strong>同一组平行线之间，高的位置可以变，长度不变。</span></p><p><b>3</b><span><strong>用 90° 检查，用对应公式算面积。</strong>高可以在图形里、外面或与边重合。底、高用长度单位；面积用平方单位。</span></p></div><div class="quiz-status"><strong id="quizScore" aria-live="polite">已完成 0 / 3 题</strong><button id="quizReset">重新做这 3 题</button></div>
+      <article class="quiz" data-question="1"><h3>第 1 题 · BC 当底，哪条是高？</h3><svg viewBox="0 0 600 250" role="img" aria-label="三角形 ABC，AH 垂直 BC，AM 斜着连接到底边，AH 有直角标记"><polygon points="235,35 90,205 510,205" fill="#93b5a811" stroke="#81948e" stroke-width="2"/><line x1="90" y1="205" x2="510" y2="205" class="mini-base"/><line x1="235" y1="35" x2="390" y2="205" stroke="#9878b9" stroke-width="3"/><line x1="235" y1="35" x2="235" y2="205" class="mini-height"/><path d="M235 187h18v18" class="mini-angle"/><g fill="#243a38" font-size="21"><text x="226" y="25">A</text><text x="70" y="234">B</text><text x="510" y="234">C</text><text x="225" y="234">H</text><text x="380" y="234">M</text></g></svg><div class="quiz-choices" role="group" aria-label="第1题答案"><button data-answer="AH" aria-pressed="false">AH</button><button data-answer="AM" aria-pressed="false">AM</button><button data-answer="AB" aria-pressed="false">AB</button></div><p class="quiz-feedback" id="quizFeedback" aria-live="polite">点一个答案，再说说你看到了哪个直角。</p></article>
+      <article class="quiz" data-question="2"><h3>第 2 题 · 同底等高，能得到什么？</h3><p>两个三角形共用一条长 6 厘米的底，对应的高都是 4 厘米。顶点在同一条平行线上，形状可以不同。下面哪句话对？</p><svg viewBox="0 0 600 300" role="img" aria-label="两三角形共用底长6厘米，两个顶点在同一条平行线上，高都为4厘米"><path d="M60 50H550" class="mini-diagonal"/><polygon points="220,50 120,250 420,250" fill="#197da310" stroke="#197da3" stroke-width="2"/><polygon points="360,50 120,250 420,250" fill="#8b61b410" stroke="#8b61b4" stroke-width="2"/><path d="M220 50V250M360 50V250" class="mini-height"/><path d="M220 235h15v15M360 235h15v15" class="mini-angle"/><g font-size="20" fill="#243a38"><text x="225" y="283">底 6 厘米</text><text x="230" y="153">高 4</text><text x="370" y="153">高 4</text></g></svg><div class="quiz-choices" role="group" aria-label="第2题答案"><button data-answer="equal" aria-pressed="false">面积都为 12 平方厘米</button><button data-answer="double" aria-pressed="false">面积都为 24 平方厘米</button><button data-answer="slanted" aria-pressed="false">斜边更长的面积更大</button></div><p class="quiz-feedback" aria-live="polite">先想公式，再比较两块图形。</p></article>
+      <article class="quiz" data-question="3"><h3>第 3 题 · 梯形的面积是多少？</h3><p>上底 4 厘米、下底 6 厘米、垂直的高 3 厘米。图上的一条腰长 5 厘米，算面积时该用哪一个？</p><svg viewBox="0 0 650 280" role="img" aria-label="梯形上底4厘米、下底6厘米、高3厘米、左腰5厘米"><polygon points="330,70 130,220 430,220 530,70" fill="#93b5a815" stroke="#81948e" stroke-width="2"/><path d="M330 70H530M130 220H430" class="mini-base"/><path d="M330 70V220" class="mini-height"/><path d="M330 203h17v17" class="mini-angle"/><g fill="#243a38" font-size="21"><text x="365" y="48">上底 4 厘米</text><text x="210" y="258">下底 6 厘米</text><text x="340" y="156">高 3</text><text x="151" y="127">腰 5</text></g></svg><div class="quiz-choices" role="group" aria-label="第3题答案"><button data-answer="15" aria-pressed="false">15 平方厘米</button><button data-answer="30" aria-pressed="false">30 平方厘米</button><button data-answer="25" aria-pressed="false">25 平方厘米</button></div><p class="quiz-feedback" aria-live="polite">找到与两底垂直的高，别被腰的长度带走。</p></article>
+    </section>
+    <footer><span>记住：<strong>底与高要配对；高与底边所在直线成 90°。</strong></span><span>拖动实验 · 作图演示 · 小挑战</span></footer>
+  </main>
+</div>
+<script src="geometry.js"></script>
+<script src="app.js"></script>
+<script src="lesson.js"></script>
+</body>
+</html>

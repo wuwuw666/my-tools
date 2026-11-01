@@ -30,9 +30,16 @@
     const ps=example.points.map(([x,y])=>({x:450+(x-450)*c-(y-250)*s,y:250+(x-450)*s+(y-250)*c}));
     const i=names.indexOf(base[0]),j=names.indexOf(base[1]),quad=ps.length===4;
     const topIndex=quad?(i+3)%4:3-i-j,oppositeEnd=quad?(i+2)%4:topIndex;
-    const p=quad?interpolate(ps[topIndex],ps[oppositeEnd],Math.min(1,Math.max(0,position))):ps[topIndex];
+    const p=quad?interpolate(ps[topIndex],ps[oppositeEnd],position):ps[topIndex];
     const g=triangleGeometry({A:p,B:ps[i],C:ps[j]},'BC');
     return {example,ps,quad,i,j,topIndex,oppositeEnd,p,g,area:polygonArea(ps),opposite:[ps[topIndex],ps[oppositeEnd]]};
+  }
+  // Leave room beyond BOTH finite edges, including a trapezoid's shorter base.
+  function heightMovementRange(shape,base){
+    const a=heightConstruction(shape,base,0),b=heightConstruction(shape,base,1);
+    if(!a.quad)throw new Error('Moving heights require parallel opposite edges');
+    const slope=b.g.t-a.g.t;
+    return {min:Math.min(-.2,(-.2-a.g.t)/slope),max:Math.max(1.2,(1.2-a.g.t)/slope)};
   }
   function areaAssembly(mode,progress=0){
     const trapezoid=mode==='trapezoid';
@@ -61,7 +68,7 @@
     const moved=cut.map(p=>({x:p.x+dx,y:p.y+dy}));
     return {original,cut,remaining,rectangle,moved,dx,dy,base:6,height:4,area:polygonArea(original)/2500};
   }
-  const lessons={examples,interpolate,polygonArea,heightConstruction,areaAssembly,parallelogramRearrangement};
+  const lessons={examples,interpolate,polygonArea,heightConstruction,heightMovementRange,areaAssembly,parallelogramRearrangement};
   root.GeometryLessons=lessons;
   if(typeof module!=='undefined')module.exports={triangleGeometry,...lessons};
 })(typeof window==='undefined'?globalThis:window);

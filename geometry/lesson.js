@@ -96,33 +96,38 @@
 
   const heightState={shape:'parallelogram',base:'BC',position:.4},heightBoard=$('heightsBoard');let heightModel,heightDrag=null;
   function renderHeights(){
-    const st=heightState,m=G.heightConstruction(st.shape,st.base,st.position,$('movingTilt').checked);heightModel=m;
+    const st=heightState,range=G.heightMovementRange(st.shape,st.base);st.position=clamp(st.position,range.min,range.max);
+    const m=G.heightConstruction(st.shape,st.base,st.position,$('movingTilt').checked);heightModel=m;
     const {g,p,ps}=m,h=g.foot,u={x:g.ux,y:g.uy},v={x:(p.x-h.x)/g.height,y:(p.y-h.y)/g.height};
-    let html=`<title id="heightsTitle">${m.example.name}：拖动高，观察高度和面积保持不变</title><desc id="heightsDesc">拖动蓝色圆点沿对边移动，或用下方滑块。高始终垂直于选定底边，长度不变。圆点获得焦点后也可用方向键移动。</desc><polygon points="${pts(ps)}" class="construction-shape"/>`;
-    const ends=[0,1].map(t=>G.heightConstruction(st.shape,st.base,t,$('movingTilt').checked).g),lo=Math.min(0,...ends.map(q=>q.t))-.1,hi=Math.max(1,...ends.map(q=>q.t))+.1;
+    let html=`<title id="heightsTitle">${m.example.name}：拖动高，观察高度和面积保持不变</title><desc id="heightsDesc">拖动蓝色圆点沿对边及其两侧延长线移动，或用下方滑块。高始终垂直于选定底边，长度不变。圆点获得焦点后也可用方向键移动。</desc><polygon points="${pts(ps)}" class="construction-shape"/>`;
+    const extremes=[range.min,range.max].map(t=>G.heightConstruction(st.shape,st.base,t,$('movingTilt').checked)),ends=extremes.map(q=>q.g),lo=Math.min(0,...ends.map(q=>q.t))-.1,hi=Math.max(1,...ends.map(q=>q.t))+.1;
     html+=seg({x:g.start.x+u.x*g.length*lo,y:g.start.y+u.y*g.length*lo},{x:g.start.x+u.x*g.length*hi,y:g.start.y+u.y*g.length*hi},'construction-extension');
+    const [oa,ob]=m.opposite,topExtensions=[G.interpolate(oa,ob,range.min-.1),G.interpolate(oa,ob,range.max+.1)];
+    html+=seg(...topExtensions,'opposite-edge');
     if($('showManyHeights').checked)for(let t=0;t<=1.001;t+=.125){const sample=G.heightConstruction(st.shape,st.base,t,$('movingTilt').checked);html+=seg(sample.p,sample.g.foot,'height-ghost');}
     html+=seg(g.start,g.end,'mini-base')+seg(...m.opposite,'opposite-edge')+pointLabels(ps)+seg(p,h,'mini-height','movableHeightLine')+`<path d="${angleMark(h,u,v)}" class="mini-angle"/>`;
     html+=label({x:(p.x+h.x)/2+u.x*28,y:(p.y+h.y)/2+u.y*28},`高 ${(g.height/50).toFixed(1)}`,'height-caption');
     html+=`<g id="heightHandle" transform="translate(${p.x} ${p.y})" role="button" tabindex="0" aria-label="拖动高的位置，也可用左右方向键"><circle r="30" class="height-handle-halo"/><circle r="11" class="height-handle-dot"/><text y="-29" class="handle-caption" text-anchor="middle">拖我</text></g>`;
     heightBoard.innerHTML=html;
-    const all=ps.concat(ends.map(q=>q.foot));
+    const all=ps.concat(extremes.flatMap(q=>[q.p,q.g.foot]),topExtensions);
     const minX=Math.min(0,...all.map(q=>q.x-65)),maxX=Math.max(900,...all.map(q=>q.x+80)),minY=Math.min(0,...all.map(q=>q.y-70)),maxY=Math.max(500,...all.map(q=>q.y+65));
     attr(heightBoard,'viewBox',`${minX} ${minY} ${maxX-minX} ${maxY-minY}`);
-    $('heightPosition').value=String(st.position*100);$('heightPosition').setAttribute('aria-valuetext',`对边上的 ${Math.round(st.position*100)}% 位置，高 ${(g.height/50).toFixed(1)} 单位`);
+    const location=st.position<0||st.position>1?'蓝点在对边延长线上':g.outside?'蓝点在对边上，垂足在底边延长线上':'蓝点在对边上';
+    $('heightPosition').value=String((st.position-range.min)/(range.max-range.min)*100);$('heightPosition').setAttribute('aria-valuetext',`${location}，高 ${(g.height/50).toFixed(1)} 单位`);
     $('movingHeightValue').textContent=`${(g.height/50).toFixed(1)} 单位`;$('movingAreaValue').textContent=`${(m.area/2500).toFixed(1)} 平方单位`;
-    $('heightFinding').textContent=`高移到新位置后，仍然与 ${st.base} 垂直。${st.shape==='trapezoid'?'上底、下底和它们的垂直距离都没变，梯形面积不变。':'底和对应的高都没变，面积不变。'} 点到另一位置，还能继续画高！`;
+    $('heightFinding').textContent=`${location}。${st.position<0||st.position>1?'图形外的蓝线段连接两条平行边所在的直线，表示的仍是同一个高度。':''}它始终与 ${st.base} 成 90°。${st.shape==='trapezoid'?'上下底没有变，':'底没有变，'}高的长度也没有变，所以面积不变。`;
     document.querySelectorAll('[data-height-shape]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.heightShape===st.shape)));
   }
   function moveHeight(event){
     const point=heightBoard.createSVGPoint();point.x=event.clientX;point.y=event.clientY;const xy=point.matrixTransform(heightBoard.getScreenCTM().inverse()),[a,b]=heightModel.opposite,dx=b.x-a.x,dy=b.y-a.y;
-    heightState.position=clamp(((xy.x-a.x)*dx+(xy.y-a.y)*dy)/(dx*dx+dy*dy));renderHeights();
+    const range=G.heightMovementRange(heightState.shape,heightState.base);
+    heightState.position=clamp(((xy.x-a.x)*dx+(xy.y-a.y)*dy)/(dx*dx+dy*dy),range.min,range.max);renderHeights();
   }
   heightBoard.addEventListener('pointerdown',event=>{if(!event.target.closest('#heightHandle'))return;event.preventDefault();heightDrag=event.pointerId;heightBoard.setPointerCapture(event.pointerId);moveHeight(event);});
   heightBoard.addEventListener('pointermove',event=>{if(heightDrag===event.pointerId)moveHeight(event);});['pointerup','pointercancel','lostpointercapture'].forEach(type=>heightBoard.addEventListener(type,()=>{heightDrag=null;}));
-  heightBoard.addEventListener('keydown',event=>{const dirs={ArrowLeft:-.025,ArrowDown:-.025,ArrowRight:.025,ArrowUp:.025};if(!event.target.closest('#heightHandle')||!dirs[event.key])return;event.preventDefault();heightState.position=clamp(heightState.position+dirs[event.key]);renderHeights();$('heightHandle').focus({preventScroll:true});});
+  heightBoard.addEventListener('keydown',event=>{const dirs={ArrowLeft:-.025,ArrowDown:-.025,ArrowRight:.025,ArrowUp:.025};if(!event.target.closest('#heightHandle')||!dirs[event.key])return;event.preventDefault();const range=G.heightMovementRange(heightState.shape,heightState.base);heightState.position=clamp(heightState.position+dirs[event.key],range.min,range.max);renderHeights();$('heightHandle').focus({preventScroll:true});});
   document.querySelectorAll('[data-height-shape]').forEach(b=>b.addEventListener('click',()=>{heightState.shape=b.dataset.heightShape;heightState.base='BC';options($('movingBase'),heightState.shape,heightState.base);renderHeights();}));
-  $('heightPosition').addEventListener('input',()=>{heightState.position=Number($('heightPosition').value)/100;renderHeights();});$('movingBase').addEventListener('change',()=>{heightState.base=$('movingBase').value;renderHeights();});$('movingTilt').addEventListener('change',renderHeights);$('showManyHeights').addEventListener('change',renderHeights);
+  $('heightPosition').addEventListener('input',()=>{const range=G.heightMovementRange(heightState.shape,heightState.base);heightState.position=range.min+Number($('heightPosition').value)/100*(range.max-range.min);renderHeights();});$('movingBase').addEventListener('change',()=>{heightState.base=$('movingBase').value;renderHeights();});$('movingTilt').addEventListener('change',renderHeights);$('showManyHeights').addEventListener('change',renderHeights);
   options($('movingBase'),heightState.shape,heightState.base);renderHeights();
 
   // The congruent copy only rotates/translates: its shape and area never change.

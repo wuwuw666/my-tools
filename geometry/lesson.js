@@ -94,7 +94,7 @@
   $('lessonBase').addEventListener('change',()=>{base=$('lessonBase').value;buildConstruction();});$('tiltLesson').addEventListener('change',buildConstruction);$('splitLesson').addEventListener('change',buildConstruction);
   options($('lessonBase'),shape,base);buildConstruction();
 
-  const heightState={shape:'parallelogram',base:'BC',position:.4},heightBoard=$('heightsBoard');let heightModel,heightDrag=null;
+  const heightState={shape:'parallelogram',base:'BC',position:.4},heightBoard=$('heightsBoard');let heightModel,heightDrag=null,heightDragOffset={x:0,y:0};
   function renderHeights(){
     const st=heightState,range=G.heightMovementRange(st.shape,st.base);st.position=clamp(st.position,range.min,range.max);
     const m=G.heightConstruction(st.shape,st.base,st.position,$('movingTilt').checked);heightModel=m;
@@ -117,14 +117,15 @@
     $('movingHeightValue').textContent=`${(g.height/50).toFixed(1)} 单位`;$('movingAreaValue').textContent=`${(m.area/2500).toFixed(1)} 平方单位`;
     $('heightFinding').textContent=`${location}。${st.position<0||st.position>1?'图形外的蓝线段连接两条平行边所在的直线，表示的仍是同一个高度。':''}它始终与 ${st.base} 成 90°。${st.shape==='trapezoid'?'上下底没有变，':'底没有变，'}高的长度也没有变，所以面积不变。`;
     document.querySelectorAll('[data-height-shape]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.heightShape===st.shape)));
+    window.DragHints?.attach(heightBoard,$('heightHandle'),'height');
   }
   function moveHeight(event){
-    const point=heightBoard.createSVGPoint();point.x=event.clientX;point.y=event.clientY;const xy=point.matrixTransform(heightBoard.getScreenCTM().inverse()),[a,b]=heightModel.opposite,dx=b.x-a.x,dy=b.y-a.y;
+    const point=heightBoard.createSVGPoint();point.x=event.clientX-heightDragOffset.x;point.y=event.clientY-heightDragOffset.y;const xy=point.matrixTransform(heightBoard.getScreenCTM().inverse()),[a,b]=heightModel.opposite,dx=b.x-a.x,dy=b.y-a.y;
     const range=G.heightMovementRange(heightState.shape,heightState.base);
     heightState.position=clamp(((xy.x-a.x)*dx+(xy.y-a.y)*dy)/(dx*dx+dy*dy),range.min,range.max);renderHeights();
   }
-  heightBoard.addEventListener('pointerdown',event=>{if(!event.target.closest('#heightHandle'))return;event.preventDefault();heightDrag=event.pointerId;heightBoard.setPointerCapture(event.pointerId);moveHeight(event);});
-  heightBoard.addEventListener('pointermove',event=>{if(heightDrag===event.pointerId)moveHeight(event);});['pointerup','pointercancel','lostpointercapture'].forEach(type=>heightBoard.addEventListener(type,()=>{heightDrag=null;}));
+  heightBoard.addEventListener('pointerdown',event=>{const handle=event.target.closest('#heightHandle');if(!handle)return;event.preventDefault();heightDragOffset={x:0,y:0};const fromCue=!!event.target.closest('.drag-intro');if(fromCue){const matrix=handle.getScreenCTM();heightDragOffset={x:event.clientX-matrix.e,y:event.clientY-matrix.f};}heightDrag=event.pointerId;heightBoard.setPointerCapture(event.pointerId);if(!fromCue)moveHeight(event);});
+  heightBoard.addEventListener('pointermove',event=>{if(heightDrag===event.pointerId)moveHeight(event);});['pointerup','pointercancel','lostpointercapture'].forEach(type=>heightBoard.addEventListener(type,()=>{heightDrag=null;heightDragOffset={x:0,y:0};}));
   heightBoard.addEventListener('keydown',event=>{const dirs={ArrowLeft:-.025,ArrowDown:-.025,ArrowRight:.025,ArrowUp:.025};if(!event.target.closest('#heightHandle')||!dirs[event.key])return;event.preventDefault();const range=G.heightMovementRange(heightState.shape,heightState.base);heightState.position=clamp(heightState.position+dirs[event.key],range.min,range.max);renderHeights();$('heightHandle').focus({preventScroll:true});});
   document.querySelectorAll('[data-height-shape]').forEach(b=>b.addEventListener('click',()=>{heightState.shape=b.dataset.heightShape;heightState.base='BC';options($('movingBase'),heightState.shape,heightState.base);renderHeights();}));
   $('heightPosition').addEventListener('input',()=>{const range=G.heightMovementRange(heightState.shape,heightState.base);heightState.position=range.min+Number($('heightPosition').value)/100*(range.max-range.min);renderHeights();});$('movingBase').addEventListener('change',()=>{heightState.base=$('movingBase').value;renderHeights();});$('movingTilt').addEventListener('change',renderHeights);$('showManyHeights').addEventListener('change',renderHeights);

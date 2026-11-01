@@ -78,6 +78,7 @@
     else{text('discoveryTitle',`选 ${base} 当底，就从对面的 ${g.topName} 作高。`);text('discoveryText','蓝色小方角表示 90°。换一条边当底试试：对面的顶点和对应的高，也会一起换。');}
     const format=n=>Number.isFinite(n)?n.toFixed(1):'—';
     text('baseValue',`${format(g.length/30)} 单位`);text('heightValue',`${format((g.height||0)/30)} 单位`);text('areaValue',`${format((g.area||0)/900)} 平方单位`);
+    window.DragHints?.attach(board,vertices.find(el=>el.dataset.point===g.topName),'triangle');
   }
   function setScene(next){drag=null;scene=next;points=structuredClone(scenes[next]);base='BC';render();}
   document.querySelectorAll('[data-scene]').forEach(button=>button.addEventListener('click',()=>setScene(button.dataset.scene)));

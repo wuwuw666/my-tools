@@ -56,7 +56,7 @@
     result.words=array('words',300).map(x=>({word:text(x.word,80),meaning:text(x.meaning,160)}));
     result.dictation=array('dictation',300).map(x=>text(x,80));
     result.passages=array('passages',100).map(x=>({id:text(x.id,100),title:text(x.title,80),text:text(x.text,2000)}));
-    result.mistakes=array('mistakes',2000).map(x=>{
+    result.mistakes=array('mistakes',100000).map(x=>{
       if(!['math','english','chinese'].includes(x.subject)||!['decimal','grammar','spelling','dictation','recitation','geometry'].includes(x.kind))throw Error('备份学科或题型不正确。');
       const r={id:text(x.id,100),subject:x.subject,kind:x.kind,prompt:text(x.prompt,2000),expected:text(x.expected,2000),explanation:text(x.explanation||'',2000),answer:text(x.answer||'',2000)};
       for(const key of ['wrong','streak','created','updated']){const value=x[key]??0;if(!Number.isSafeInteger(value)||value<0)throw Error('备份中的计数或日期不正确。');r[key]=value;}r.streak=Math.min(3,r.streak);return r;
@@ -68,7 +68,7 @@
     const result=empty();result.words=[...new Map([...a.words,...b.words].map(x=>[normalizeWord(x.word),x])).values()].slice(0,300);
     result.dictation=[...new Set([...a.dictation,...b.dictation])].slice(0,300);
     result.passages=[...new Map([...a.passages,...b.passages].map(x=>[x.id,x])).values()].slice(0,100);
-    const mistakes=new Map();for(const m of [...a.mistakes,...b.mistakes]){const old=mistakes.get(m.id);if(!old||(m.updated||0)>(old.updated||0))mistakes.set(m.id,m);}result.mistakes=[...mistakes.values()].slice(-2000);
+    const mistakes=new Map();for(const m of [...a.mistakes,...b.mistakes]){const old=mistakes.get(m.id);if(!old||(m.updated||0)>(old.updated||0))mistakes.set(m.id,m);}result.mistakes=[...mistakes.values()];
     result.history=[...new Map([...a.history,...b.history].map(x=>[x.id,x])).values()].sort((x,y)=>x.at-y.at).slice(-2000);return result;
   }
   const api={decimal,format,decimalEqual,normalizeWord,normalizeChinese,matches,exercise,comparePassage,uid,empty,record,parsePairs,validateBackup,merge};
